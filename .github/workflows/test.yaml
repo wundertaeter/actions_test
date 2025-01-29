@@ -32,4 +32,4 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v4
         with:
-          ref: $BRANCH_NAME
+          ref: ${{ env.BRANCH_NAME }}
