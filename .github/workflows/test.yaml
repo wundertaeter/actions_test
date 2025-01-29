@@ -14,4 +14,4 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: test
-      - run: echo ${{ github.event.issue.repo }}
+      - run: echo ${{ github.event.issue.pull_request }}
