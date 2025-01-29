@@ -10,8 +10,21 @@ jobs:
 
     # Build steps
     steps:
-      - name: Checkout the repo
-        uses: actions/checkout@v4
-        with:
-          ref: test
-      - run: echo ${{ github.event.issue.pull_request }}
+      - name: Check if comment is on a PR
+        if: github.event.issue.pull_request
+        run: echo "This is a PR comment"
+
+      - name: Get PR details
+        if: github.event.issue.pull_request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_URL="${{ github.event.issue.pull_request.url }}"
+          BRANCH_NAME=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "$PR_URL" | jq -r '.head.ref')
+          echo "Feature branch: $BRANCH_NAME"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+
+      - name: Use the feature branch name
+        run: echo "The feature branch is $BRANCH_NAME"
